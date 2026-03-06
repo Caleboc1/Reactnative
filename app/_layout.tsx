@@ -1,34 +1,46 @@
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
+import { PaperProvider } from "react-native-paper";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-
-
-export default function RootLayout() {
+function RootLayoutNav() {
   const router = useRouter();
-  const {user, isLoadingUser} = useAuth();
+  const { user, isLoadingUser } = useAuth();
   const segments = useSegments();
 
   useEffect(() => {
+    if (isLoadingUser) return; // Don't navigate while loading
+
     const timeout = setTimeout(() => {
       const inAuthGroup = segments[0] === "auth";
 
-      if (!user && !inAuthGroup && !isLoadingUser) {
+      if (!user && !inAuthGroup) {
         router.replace("/auth");
-      } else if (user && inAuthGroup && !isLoadingUser) {
-        router.replace("/");
+      } else if (user && inAuthGroup) {
+        router.replace("/(tabs)");
       }
     }, 0);
 
     return () => clearTimeout(timeout);
-  }, [user, segments]);
+  }, [user, segments, isLoadingUser]);
 
   return (
-    <AuthProvider> 
-      <Stack>
+    <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="auth" options={{ headerShown: true}} />
-    </Stack></AuthProvider>
-   
+      <Stack.Screen name="auth" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <PaperProvider>
+        <SafeAreaProvider>
+          <RootLayoutNav />
+        </SafeAreaProvider>
+      </PaperProvider>
+    </AuthProvider>
   );
 }
