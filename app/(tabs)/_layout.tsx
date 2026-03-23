@@ -5,7 +5,7 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 export default function TabsLayout() {
   return <Tabs screenOptions={{
-    headerStyle: { backgroundColor: "#6200ee" }, headerShadowVisible: false,
+     headerShadowVisible: false,
     tabBarStyle: {
       backgroundColor: "f5f5f5",
       borderTopWidth: 0,
