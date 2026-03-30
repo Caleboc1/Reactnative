@@ -17,45 +17,47 @@ export default function Index() {
   const swipeableRefs = useRef<{ [key: string]: Swipeable | null }>({})
 
   useEffect(() => {
+    if (user) {
+      const habitsChannel = `databases.${DATABASE_ID}.collections.${HABITS_COLLECTION_ID}.documents`
+      const habitsSubscription = client.subscribe(
+        habitsChannel
+        , (response: RealtimeResponse) => {
+          if (response.events.includes("databases.*.collections.*.documents.*.create")
+          ) {
+            fetchHabits();
+          } else if (
+            response.events.includes(
+              "databases.*.collections.*.documents.*.update"
+            )
+          ) {
+            fetchHabits();
+          } else if (
+            response.events.includes(
+              "databases.*.collections.*.documents.*.delete"
+            )
+          ) {
+            fetchHabits();
+          }
+        });
 
-    const habitsChannel = `databases.${DATABASE_ID}.collections.${HABITS_COLLECTION_ID}.documents`
-    const habitsSubscription = client.subscribe(
-      habitsChannel
-      , (response: RealtimeResponse) => {
-        if (response.events.includes("databases.*.collections.*.documents.*.create")
-        ) {
-          fetchHabits();
-        } else if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.update"
-          )
-        ) {
-          fetchHabits();
-        } else if (
-          response.events.includes(
-            "databases.*.collections.*.documents.*.delete"
-          )
-        ) {
-          fetchHabits();
-        }
-      });
+      const completionsChannel = `databases.${DATABASE_ID}.collections.${COMPLETIONS_COLLECTION_ID}.documents`
+      const completionsSubscription = client.subscribe(
+        completionsChannel
+        , (response: RealtimeResponse) => {
+          if (response.events.includes("databases.*.collections.*.documents.*.create")
+          ) {
+            fetchTodayCompletions();
+          }
+        });
+      fetchHabits();
+      fetchTodayCompletions();
 
-    const completionsChannel = `databases.${DATABASE_ID}.collections.${COMPLETIONS_COLLECTION_ID}.documents`
-    const completionsSubscription = client.subscribe(
-      completionsChannel
-      , (response: RealtimeResponse) => {
-        if (response.events.includes("databases.*.collections.*.documents.*.create")
-        ) {
-          fetchTodayCompletions();
-        }
-      });
-    fetchHabits();
-    fetchTodayCompletions();
-
-    return () => {
-      habitsSubscription();
-      completionsSubscription();
+      return () => {
+        habitsSubscription();
+        completionsSubscription();
+      }
     }
+
   }, [user]);
 
   const fetchHabits = async () => {
@@ -126,7 +128,7 @@ export default function Index() {
   const renderRightActions = (habitId: string) => (
     <View style={styles.swipeActionRight}>
       {isHabitCompleted(habitId) ? (
-        <Text style={{color: "#fff"}}>Completed</Text>
+        <Text style={{ color: "#fff" }}>Completed</Text>
       ) : (<MaterialCommunityIcons
         name="check-circle-outline"
         size={32} color={"#fff"} />

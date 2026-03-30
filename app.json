@@ -1,15 +1,17 @@
 {
   "expo": {
-    "name": "Reactnative",
+    "name": "Habit Tracker",
     "slug": "Reactnative",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "reactnative",
+    "scheme": "habittracker",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.caleb.habittracker",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +21,9 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.caleb.habittracker",
+      "versionCode": 1
     },
     "web": {
       "output": "static",
@@ -43,6 +47,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "910b6aea-a333-4988-ac63-cf976b6b6bf2"
+      }
     }
   }
 }
